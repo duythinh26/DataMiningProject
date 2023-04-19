@@ -12,3 +12,4 @@ This project performed some data mining techniques on the dataset <a href = "htt
     <li>Discretize continuous attributes</li>
   </ul>
 </ol>
+testing

@@ -7,12 +7,12 @@ import weka.core.converters.CSVLoader;
 public class CsvToArff {
     public static void main(String[] args) throws Exception {
         CSVLoader csvLoader = new CSVLoader();
-        csvLoader.setSource(new File("data/HepatitisCdata.csv"));
+        csvLoader.setSource(new File("./code/data/HepatitisCdata.csv"));
         Instances dataset = csvLoader.getDataSet();
 
         ArffSaver arffSaver = new ArffSaver();
         arffSaver.setInstances(dataset);
-        arffSaver.setFile(new File("data/HepatitisCdata.arff"));
+        arffSaver.setFile(new File("./code/data/HepatitisCdata.arff"));
         arffSaver.writeBatch();
     }
 }

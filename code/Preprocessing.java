@@ -6,6 +6,7 @@ import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.InterquartileRange;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
+import weka.filters.unsupervised.instance.RemoveWithValues;
 
 public class Preprocessing {
     public static void main(String[] args) throws Exception{
@@ -33,11 +34,11 @@ public class Preprocessing {
          * Detect outliers and extreme values
          */
         // Load no missing values dataset
-        DataSource src1 = new DataSource("./code/data/noMissing-HepatitisCdata.arff");
-        Instances dataset1 = src1.getDataSet();
+        DataSource iqrSrc = new DataSource("./code/data/noMissing-HepatitisCdata.arff");
+        Instances iqrDataset = iqrSrc.getDataSet();
 
         // Set up the options for interquartile range
-        String[] option = new String[]{"-R", "first-last", "-O", "3.0", "-E", "6.0"};
+        String[] option = new String[]{"-R", "first-last", "-O", "1.5", "-E", "3.0"};
 
         // Create an object to define interquartile range values
         InterquartileRange interquartileRange = new InterquartileRange();
@@ -46,12 +47,37 @@ public class Preprocessing {
         interquartileRange.setOptions(option);
 
         // Put the dataset into the filter and use filter
-        interquartileRange.setInputFormat(dataset1);
-        Instances iqrData = Filter.useFilter(dataset1, interquartileRange);
+        interquartileRange.setInputFormat(iqrDataset);
+        Instances iqrData = Filter.useFilter(iqrDataset, interquartileRange);
 
         // Write a new dataset after detect interquartile range values
         saver.setInstances(iqrData);
         saver.setFile(new File("./code/data/IQR-HepatitisCdata.arff"));
+        saver.writeBatch();
+
+        /**
+         * Remove the outliers and extreme values
+         */
+        // Load no missing values dataset
+        DataSource outlierSrc = new DataSource("./code/data/IQR-HepatitisCdata.arff");
+        Instances outlierDataset = outlierSrc.getDataSet();
+
+        // Set up the options for interquartile range
+        String[] outlierOption = new String[]{"-S", "0.0", "-C", "15", "-L", "last"};
+
+        // Create an object to define interquartile range values
+        RemoveWithValues removeOutlier = new RemoveWithValues();
+
+        // Set the options for filter
+        removeOutlier.setOptions(outlierOption);
+
+        // Put the dataset into the filter and use filter
+        removeOutlier.setInputFormat(outlierDataset);
+        Instances removeOutlierData = Filter.useFilter(outlierDataset, removeOutlier);
+
+        // Write a new dataset after detect interquartile range values
+        saver.setInstances(removeOutlierData);
+        saver.setFile(new File("./code/data/outlierRemoved-HepatitisCdata.arff"));
         saver.writeBatch();
     }
 }

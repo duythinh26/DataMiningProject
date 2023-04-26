@@ -5,6 +5,7 @@ import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.InterquartileRange;
+import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 import weka.filters.unsupervised.instance.RemoveWithValues;
 
@@ -101,5 +102,31 @@ public class Preprocessing {
         saver.setInstances(removeExtremeData);
         saver.setFile(new File("./code/data/extremeRemoved-HepatitisCdata.arff"));
         saver.writeBatch();
+
+        /**
+         * Remove Outlier and ExtremeValue attributes
+         */
+        src = new DataSource("./code/data/extremeRemoved-HepatitisCdata.arff");
+        dataset = src.getDataSet();
+
+        // Set up the options for remove outlier values
+        String[] opt = new String[]{"-R", "15,16"};
+
+        // Create an object to remove outlier values
+        Remove remove = new Remove();
+
+        // Set the options for filter
+        remove.setOptions(opt);
+
+        // Put the dataset into the filter and use filter
+        remove.setInputFormat(dataset);
+        Instances newData = Filter.useFilter(dataset, remove);
+
+        // Write a new dataset after remove outlier values
+        saver.setInstances(newData);
+        saver.setFile(new File("./code/data/cleaned-HepatitisCdata.arff"));
+        saver.writeBatch();
+
+        
     }
 }

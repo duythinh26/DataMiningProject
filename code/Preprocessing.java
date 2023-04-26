@@ -79,5 +79,27 @@ public class Preprocessing {
         saver.setInstances(removeOutlierData);
         saver.setFile(new File("./code/data/outlierRemoved-HepatitisCdata.arff"));
         saver.writeBatch();
+
+        // Load outlier removed dataset
+        DataSource extremeSrc = new DataSource("./code/data/outlierRemoved-HepatitisCdata.arff");
+        Instances extremeDataset = extremeSrc.getDataSet();
+
+        // Set up the options for remove outlier values
+        String[] extremeOption = new String[]{"-S", "0.0", "-C", "16", "-L", "last"};
+
+        // Create an object to remove outlier values
+        RemoveWithValues removeExtreme = new RemoveWithValues();
+
+        // Set the options for filter
+        removeExtreme.setOptions(extremeOption);
+
+        // Put the dataset into the filter and use filter
+        removeExtreme.setInputFormat(extremeDataset);
+        Instances removeExtremeData = Filter.useFilter(extremeDataset, removeExtreme);
+
+        // Write a new dataset after remove outlier values
+        saver.setInstances(removeExtremeData);
+        saver.setFile(new File("./code/data/extremeRemoved-HepatitisCdata.arff"));
+        saver.writeBatch();
     }
 }

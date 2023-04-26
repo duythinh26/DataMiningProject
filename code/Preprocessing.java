@@ -58,14 +58,14 @@ public class Preprocessing {
         /**
          * Remove the outliers and extreme values
          */
-        // Load no missing values dataset
+        // Load InterQuartile Range values dataset
         DataSource outlierSrc = new DataSource("./code/data/IQR-HepatitisCdata.arff");
         Instances outlierDataset = outlierSrc.getDataSet();
 
-        // Set up the options for interquartile range
+        // Set up the options for remove outlier values
         String[] outlierOption = new String[]{"-S", "0.0", "-C", "15", "-L", "last"};
 
-        // Create an object to define interquartile range values
+        // Create an object to remove outlier values
         RemoveWithValues removeOutlier = new RemoveWithValues();
 
         // Set the options for filter
@@ -75,7 +75,7 @@ public class Preprocessing {
         removeOutlier.setInputFormat(outlierDataset);
         Instances removeOutlierData = Filter.useFilter(outlierDataset, removeOutlier);
 
-        // Write a new dataset after detect interquartile range values
+        // Write a new dataset after remove outlier values
         saver.setInstances(removeOutlierData);
         saver.setFile(new File("./code/data/outlierRemoved-HepatitisCdata.arff"));
         saver.writeBatch();

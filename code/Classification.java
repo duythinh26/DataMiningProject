@@ -6,7 +6,7 @@ import weka.core.converters.ConverterUtils.DataSource;
 import java.util.Random;
 
 public class Classification {
-    public static String path = "./code/data/test-HepatitisCdata.arff"; // file path
+    public static String path = "./code/data/cleaned-HepatitisCdata.arff"; // file path
     private static DataSource source; // datasource
     private static Instances data; // dataset
     private static Evaluation eval; // evaluation factor

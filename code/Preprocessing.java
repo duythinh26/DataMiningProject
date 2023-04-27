@@ -6,6 +6,7 @@ import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Discretize;
 import weka.filters.unsupervised.attribute.InterquartileRange;
+import weka.filters.unsupervised.attribute.NumericToNominal;
 import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 import weka.filters.unsupervised.instance.RemoveWithValues;
@@ -32,11 +33,36 @@ public class Preprocessing {
         saver.setFile(new File("./code/data/noMissing-HepatitisCdata.arff"));
         saver.writeBatch();
 
+        /*
+         * Convert numeric to nominal
+         */
+        // Load raw dataset
+        src = new DataSource("./code/data/noMissing-HepatitisCdata.arff");
+        dataset = src.getDataSet();
+
+        // Set up the options to convert from numeric to nominal
+        String[] num2NomOption = new String[]{"-R", "first-last"};
+
+        // Create object to convert numeric to nominal
+        NumericToNominal numericToNominal = new NumericToNominal();
+
+        // Set the filter option
+        numericToNominal.setOptions(num2NomOption);
+
+        // Put the dataset into the filter and use filter
+        numericToNominal.setInputFormat(dataset);
+        Instances numeric2Nominal = Filter.useFilter(dataset, numericToNominal);
+
+        // Write a new dataset after finish handling missing values
+        saver.setInstances(numeric2Nominal);
+        saver.setFile(new File("./code/data/numericToNominal-HepatitisCdata.arff"));
+        saver.writeBatch();
+
         /**
          * Detect outliers and extreme values
          */
         // Load no missing values dataset
-        DataSource iqrSrc = new DataSource("./code/data/noMissing-HepatitisCdata.arff");
+        DataSource iqrSrc = new DataSource("./code/data/numericToNominal-HepatitisCdata.arff");
         Instances iqrDataset = iqrSrc.getDataSet();
 
         // Set up the options to interquartile range
@@ -150,7 +176,7 @@ public class Preprocessing {
 
         // Write a new dataset after discretize
         saver.setInstances(newData);
-        saver.setFile(new File("./code/data/discretized.arff"));
+        saver.setFile(new File("./code/data/discretized-HepatitisCdata.arff"));
         saver.writeBatch();
     }
 }

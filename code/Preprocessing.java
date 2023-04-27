@@ -4,6 +4,7 @@ import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Discretize;
 import weka.filters.unsupervised.attribute.InterquartileRange;
 import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
@@ -38,13 +39,13 @@ public class Preprocessing {
         DataSource iqrSrc = new DataSource("./code/data/noMissing-HepatitisCdata.arff");
         Instances iqrDataset = iqrSrc.getDataSet();
 
-        // Set up the options for interquartile range
+        // Set up the options to interquartile range
         String[] option = new String[]{"-R", "first-last", "-O", "1.5", "-E", "3.0"};
 
         // Create an object to define interquartile range values
         InterquartileRange interquartileRange = new InterquartileRange();
 
-        // Set the options for filter
+        // Set the filter option
         interquartileRange.setOptions(option);
 
         // Put the dataset into the filter and use filter
@@ -63,13 +64,13 @@ public class Preprocessing {
         DataSource outlierSrc = new DataSource("./code/data/IQR-HepatitisCdata.arff");
         Instances outlierDataset = outlierSrc.getDataSet();
 
-        // Set up the options for remove outlier values
+        // Set up the options to remove outlier values
         String[] outlierOption = new String[]{"-S", "0.0", "-C", "15", "-L", "last"};
 
         // Create an object to remove outlier values
         RemoveWithValues removeOutlier = new RemoveWithValues();
 
-        // Set the options for filter
+        // Set the filter option
         removeOutlier.setOptions(outlierOption);
 
         // Put the dataset into the filter and use filter
@@ -85,20 +86,20 @@ public class Preprocessing {
         DataSource extremeSrc = new DataSource("./code/data/outlierRemoved-HepatitisCdata.arff");
         Instances extremeDataset = extremeSrc.getDataSet();
 
-        // Set up the options for remove outlier values
+        // Set up the options to remove extreme values
         String[] extremeOption = new String[]{"-S", "0.0", "-C", "16", "-L", "last"};
 
-        // Create an object to remove outlier values
+        // Create an object to remove extreme values
         RemoveWithValues removeExtreme = new RemoveWithValues();
 
-        // Set the options for filter
+        // Set the filter option
         removeExtreme.setOptions(extremeOption);
 
         // Put the dataset into the filter and use filter
         removeExtreme.setInputFormat(extremeDataset);
         Instances removeExtremeData = Filter.useFilter(extremeDataset, removeExtreme);
 
-        // Write a new dataset after remove outlier values
+        // Write a new dataset after remove extreme values
         saver.setInstances(removeExtremeData);
         saver.setFile(new File("./code/data/extremeRemoved-HepatitisCdata.arff"));
         saver.writeBatch();
@@ -109,24 +110,47 @@ public class Preprocessing {
         src = new DataSource("./code/data/extremeRemoved-HepatitisCdata.arff");
         dataset = src.getDataSet();
 
-        // Set up the options for remove outlier values
+        // Set up the options to remove attribute
         String[] opt = new String[]{"-R", "15,16"};
 
-        // Create an object to remove outlier values
+        // Create an object to remove attribute
         Remove remove = new Remove();
 
-        // Set the options for filter
+        // Set the filter option
         remove.setOptions(opt);
 
         // Put the dataset into the filter and use filter
         remove.setInputFormat(dataset);
         Instances newData = Filter.useFilter(dataset, remove);
 
-        // Write a new dataset after remove outlier values
+        // Write a new dataset after remove attributes
         saver.setInstances(newData);
         saver.setFile(new File("./code/data/cleaned-HepatitisCdata.arff"));
         saver.writeBatch();
 
-        
+        /*
+         * Discretize Attributes
+         */
+        // Load dataset
+        DataSource discretizeSrc = new DataSource("./code/data/cleaned-HepatitisCdata.arff");
+        Instances discretizeDataset = discretizeSrc.getDataSet();
+
+        // Set up options to findNumBins, 10 bins, -1.0 desiredWeightOfInstancesPerInterval, 6 binRangePrecision
+        String[] discretizeOption = new String[]{"-O", "-B", "10", "-M", "-1.0", "-R", "first-last", "-precision", "6"};
+
+        // Create Discretize object
+        Discretize discretize = new Discretize();
+
+        // Set the filter option
+        discretize.setOptions(discretizeOption);
+
+        // Put the dataset into the filter and use filter
+        discretize.setInputFormat(discretizeDataset);
+        newData = Filter.useFilter(discretizeDataset, discretize);
+
+        // Write a new dataset after discretize
+        saver.setInstances(newData);
+        saver.setFile(new File("./code/data/discretized.arff"));
+        saver.writeBatch();
     }
 }

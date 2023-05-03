@@ -10,16 +10,16 @@ import java.util.Random;
 public class Folds {
     public static void main(String args[]) throws Exception{
         //load dataset
-        DataSource source = new DataSource("src/data/final.arff");
+        DataSource source = new DataSource("./code/data/cleaned-HepatitisCdata.arff");
         Instances dataset = source.getDataSet();
         //set class index to the last attribute
         dataset.setClassIndex(dataset.numAttributes()-1);
 
         //create the classifier
         //choose the executed algorithm
-        //NaiveBayes model = new NaiveBayes();
-        //J48 model = new J48();
-        ZeroR model = new ZeroR();
+        NaiveBayes model = new NaiveBayes();
+        // J48 model = new J48();
+        // ZeroR model = new ZeroR();
 
         int seed = 1;
         int folds = 10;

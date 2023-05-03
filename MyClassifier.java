@@ -10,7 +10,7 @@ import weka.classifiers.trees.J48;
 public class MyClassifier {
     public static void main(String[] args) throws Exception {
         // Load the dataset
-        DataSource source = new DataSource("./code/data/cleaned-HepatitisCdata.arff");
+        DataSource source = new DataSource("./code/data/HepatitisCdata.arff");
         Instances data = source.getDataSet();
         data.setClassIndex(data.numAttributes() - 1); // Set the class attribute
 
@@ -21,14 +21,12 @@ public class MyClassifier {
         selector.setEvaluator(evaluator);
         selector.setSearch(search);
         selector.SelectAttributes(data);
-        int[] indices = selector.selectedAttributes();
+        Instances selectedData = selector.reduceDimensionality(data); // Get the new Instances object with selected attributes
 
         // Use J48 as the classifier
         Classifier classifier = new J48();
 
         // Train the classifier on the selected features
-        Instances selectedData = new Instances(data);
-        selectedData.deleteAttributes(indices);
         classifier.buildClassifier(selectedData);
 
         // Evaluate the classifier

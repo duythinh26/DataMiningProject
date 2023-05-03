@@ -10,7 +10,7 @@ import weka.classifiers.trees.J48;
 public class MyClassifier {
     public static void main(String[] args) throws Exception {
         // Load the dataset
-        DataSource source = new DataSource("./code/data/HepatitisCdata.arff");
+        DataSource source = new DataSource("./code/data/cleaned-HepatitisCdata.arff");
         Instances data = source.getDataSet();
         data.setClassIndex(data.numAttributes() - 1); // Set the class attribute
 

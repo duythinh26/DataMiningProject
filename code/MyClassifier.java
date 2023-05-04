@@ -12,7 +12,7 @@ public class MyClassifier {
         // Load the dataset
         DataSource source = new DataSource("./code/data/cleaned-HepatitisCdata.arff");
         Instances data = source.getDataSet();
-        data.setClassIndex(data.numAttributes() - 1); // Set the class attribute
+        data.setClassIndex(0); // Set the class attribute
 
         // Perform feature selection using CFS and GreedyStepwise
         AttributeSelection selector = new AttributeSelection();

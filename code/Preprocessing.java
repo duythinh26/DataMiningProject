@@ -178,7 +178,7 @@ public class Preprocessing {
          */
         CorrelationAttributeEval cEval = new CorrelationAttributeEval();
         for (int i = dataset.numAttributes() - 1; i >= 0; i--) {
-            System.out.print("A[" + i + "]" + " ");
+            System.out.print("\t" + "A[" + i + "]" + " ");
         }
 
         System.out.println();
@@ -188,9 +188,9 @@ public class Preprocessing {
             for (int j = 0; j <= i; j++) {
                 if (j == 0) {
                     System.out.print(
-                            "A[" + i + "]" + " " + String.format("%.2f", cEval.evaluateAttribute(j)) + " ");
+                            "A[" + i + "]" + "\t" + String.format("%.2f", cEval.evaluateAttribute(j)) + "\t");
                 } else {
-                    System.out.print(String.format("%.2f", cEval.evaluateAttribute(j)) + " ");
+                    System.out.print(String.format("%.2f", cEval.evaluateAttribute(j)) + "\t");
                 }
             }
             System.out.println("\t");

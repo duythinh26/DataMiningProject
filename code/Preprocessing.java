@@ -1,5 +1,6 @@
 import java.io.File;
 
+import weka.attributeSelection.CorrelationAttributeEval;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -182,5 +183,28 @@ public class Preprocessing {
         saver.setInstances(newData);
         saver.setFile(new File("./code/data/discretized-HepatitisCdata.arff"));
         saver.writeBatch();
+
+        /*
+         * Correlation Analysis
+         */
+        CorrelationAttributeEval cEval = new CorrelationAttributeEval();
+        for (int i = dataset.numAttributes() - 1; i >= 0; i--) {
+            System.out.print("A[" + i + "]" + " ");
+        }
+
+        System.out.println();
+        for (int i = dataset.numAttributes() - 1; i >= 0; i--) {
+            dataset.setClassIndex(i);
+            cEval.buildEvaluator(dataset);
+            for (int j = 0; j <= i; j++) {
+                if (j == 0) {
+                    System.out.print(
+                            "A[" + i + "]" + " " + String.format("%.2f", cEval.evaluateAttribute(j)) + " ");
+                } else {
+                    System.out.print(String.format("%.2f", cEval.evaluateAttribute(j)) + " ");
+                }
+            }
+            System.out.println("\t");
+        }
     }
 }

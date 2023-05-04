@@ -22,6 +22,7 @@ public class Preprocessing {
         Instances dataset = src.getDataSet();
         ArffSaver saver = new ArffSaver();
 
+        // Handle "NA" values (change to ? values to easily handle missing)
         int[] replacesAttrs = new int[] { 4, 5, 6, 10, 13 };
         for (int i = 0; i < dataset.numInstances(); i++) {
             for (int j = 0; j < replacesAttrs.length; j++) {

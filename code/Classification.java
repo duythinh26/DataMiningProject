@@ -1,5 +1,6 @@
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.rules.ZeroR;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -12,7 +13,8 @@ public class Classification {
     private static Evaluation eval; // evaluation factor
 
     public static void main(String[] args) throws Exception {
-        naiveBayesClassifier();
+        // naiveBayesClassifier();
+        zeroRClassifier();
     }
 
     /**
@@ -24,7 +26,7 @@ public class Classification {
         // load dataset
         source = new DataSource(path);
         data = source.getDataSet();
-        data.setClassIndex(data.numAttributes() - 1);
+        data.setClassIndex(0);
 
         // create new Navive Bayes model
         NaiveBayes model = new NaiveBayes();
@@ -44,13 +46,34 @@ public class Classification {
         printConfusionMatrix();
     }
 
+    private static void zeroRClassifier() throws Exception{
+        // load dataset
+        source = new DataSource(path);
+        data = source.getDataSet();
+        data.setClassIndex(0);
+
+        // create new ZeroR baseline model
+        ZeroR baseline = new ZeroR();
+
+        // evaluation data with 10-fold cross validation ZeroR baseline classifier model
+        eval = new Evaluation(data);
+        eval.crossValidateModel(baseline, data, 10, new Random(1));
+        baseline.buildClassifier(data);
+
+        // print out ZeroR model
+        System.out.println("=== ZeroR Model ===\n");
+        System.out.println(baseline);
+
+        // print out evaluation result and confusion matrix
+        printConfusionMatrix();
+    }
 
     /**
      * This function is used to print out evaluation results of a model and
      * confusion matrix
      **/
     private static void printConfusionMatrix() throws Exception {
-        System.out.println();
+        // System.out.println();
         // Print out confusion matrix
         System.out.println(eval.toMatrixString("=== Confusion matrix for fold ===\n"));
         // Print out evaluation results
@@ -66,6 +89,7 @@ public class Classification {
         System.out.println("Recall = " + eval.recall(1));
         System.out.println("fMeasure = " + eval.fMeasure(1));
         // System.out.println("Error Rate = "+eval.errorRate());
-        System.out.println();
+        System.out.println("*********");
+        System.out.println(eval.toSummaryString());
     }
 }

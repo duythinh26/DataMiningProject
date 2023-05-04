@@ -10,6 +10,7 @@ import weka.filters.unsupervised.attribute.InterquartileRange;
 import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 import weka.filters.unsupervised.attribute.StringToNominal;
+import weka.filters.unsupervised.instance.RemoveDuplicates;
 import weka.filters.unsupervised.instance.RemoveWithValues;
 
 public class Preprocessing {
@@ -48,7 +49,7 @@ public class Preprocessing {
         saver.setFile(new File("./code/data/StringToNominal-HepatitisCdata.arff"));
         saver.writeBatch();
 
-        /**
+        /*
          * Handle missing values
          */
 
@@ -67,7 +68,7 @@ public class Preprocessing {
         saver.setFile(new File("./code/data/noMissing-HepatitisCdata.arff"));
         saver.writeBatch();
 
-        /**
+        /*
          * Detect outliers and extreme values
          */
         // Load no missing values dataset
@@ -89,7 +90,7 @@ public class Preprocessing {
         saver.setFile(new File("./code/data/IQR-HepatitisCdata.arff"));
         saver.writeBatch();
 
-        /**
+        /*
          * Remove the outliers and extreme values
          */
         // Load InterQuartile Range values dataset
@@ -130,10 +131,29 @@ public class Preprocessing {
         saver.setFile(new File("./code/data/extremeRemoved-HepatitisCdata.arff"));
         saver.writeBatch();
 
-        /**
+        /*
+         * Remove dupplicate values
+         */
+        // Load InterQuartile Range values dataset
+        src = new DataSource("./code/data/extremeRemoved-HepatitisCdata.arff");
+        dataset = src.getDataSet();
+
+        // Create an object to remove outlier values
+        RemoveDuplicates removeDuplicates = new RemoveDuplicates();
+
+        // Put the dataset into the filter and use filter
+        removeDuplicates.setInputFormat(dataset);
+        Instances removeDups = Filter.useFilter(dataset, removeDuplicates);
+
+        // Write a new dataset after remove outlier values
+        saver.setInstances(removeDups);
+        saver.setFile(new File("./code/data/duplicateRemoved-HepatitisCdata.arff"));
+        saver.writeBatch();
+
+        /*
          * Remove unnecessary attributes
          */
-        src = new DataSource("./code/data/extremeRemoved-HepatitisCdata.arff");
+        src = new DataSource("./code/data/duplicateRemoved-HepatitisCdata.arff");
         dataset = src.getDataSet();
 
         // Create an object to remove attribute

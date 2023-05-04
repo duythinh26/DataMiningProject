@@ -77,7 +77,7 @@ public class Preprocessing {
         InterquartileRange range = new InterquartileRange();
 
         // Set the filter option
-        range.setOptions(new String[]{"-R", "first-last", "-O", "3.0", "-E", "6.0"});
+        range.setOptions(new String[]{"-R", "first-last", "-O", "1.5", "-E", "3.0"});
 
         // Put the dataset into the filter and use filter
         range.setInputFormat(dataset);
@@ -95,14 +95,11 @@ public class Preprocessing {
         src = new DataSource("./code/data/IQR-HepatitisCdata.arff");
         dataset = src.getDataSet();
 
-        // Set up the options to remove outlier values
-        String[] outlierOption = new String[]{"-S", "0.0", "-C", "15", "-L", "last"};
-
         // Create an object to remove outlier values
         RemoveWithValues removeOutlier = new RemoveWithValues();
 
         // Set the filter option
-        removeOutlier.setOptions(outlierOption);
+        removeOutlier.setOptions(new String[]{"-S", "0.0", "-C", "15", "-L", "last"});
 
         // Put the dataset into the filter and use filter
         removeOutlier.setInputFormat(dataset);
@@ -117,14 +114,11 @@ public class Preprocessing {
         src = new DataSource("./code/data/outlierRemoved-HepatitisCdata.arff");
         dataset = src.getDataSet();
 
-        // Set up the options to remove extreme values
-        String[] extremeOption = new String[]{"-S", "0.0", "-C", "16", "-L", "last"};
-
         // Create an object to remove extreme values
         RemoveWithValues removeExtreme = new RemoveWithValues();
 
         // Set the filter option
-        removeExtreme.setOptions(extremeOption);
+        removeExtreme.setOptions(new String[]{"-S", "0.0", "-C", "16", "-L", "last"});
 
         // Put the dataset into the filter and use filter
         removeExtreme.setInputFormat(dataset);
@@ -141,14 +135,11 @@ public class Preprocessing {
         src = new DataSource("./code/data/extremeRemoved-HepatitisCdata.arff");
         dataset = src.getDataSet();
 
-        // Set up the options to remove attribute
-        String[] opt = new String[]{"-R", "1,15,16"};
-
         // Create an object to remove attribute
         Remove remove = new Remove();
 
         // Set the filter option
-        remove.setOptions(opt);
+        remove.setOptions(new String[]{"-R", "1,15,16"});
 
         // Put the dataset into the filter and use filter
         remove.setInputFormat(dataset);
@@ -166,14 +157,11 @@ public class Preprocessing {
         src = new DataSource("./code/data/cleaned-HepatitisCdata.arff");
         dataset = src.getDataSet();
 
-        // Set up options to findNumBins, 10 bins, -1.0 desiredWeightOfInstancesPerInterval, 6 binRangePrecision
-        String[] discretizeOption = new String[]{"-O", "-B", "10", "-M", "-1.0", "-R", "first-last", "-precision", "6"};
-
         // Create Discretize object
         Discretize discretize = new Discretize();
 
         // Set the filter option
-        discretize.setOptions(discretizeOption);
+        discretize.setOptions(new String[]{"-O", "-B", "10", "-M", "-1.0", "-R", "first-last", "-precision", "6"});
 
         // Put the dataset into the filter and use filter
         discretize.setInputFormat(dataset);

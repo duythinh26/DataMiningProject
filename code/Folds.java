@@ -13,7 +13,7 @@ public class Folds {
         DataSource source = new DataSource("./code/data/cleaned-HepatitisCdata.arff");
         Instances dataset = source.getDataSet();
         //set class index to the last attribute
-        dataset.setClassIndex(dataset.numAttributes()-1);
+        dataset.setClassIndex(0);
 
         //create the classifier
         //choose the executed algorithm
@@ -44,21 +44,11 @@ public class Folds {
 
             // output evaluation
             System.out.println();
-            System.out.println(eval.toMatrixString("=== Confusion matrix for fold " + (n+1) + "/" + folds + " ===\n"));
+            System.out.println(eval.toMatrixString("**** Confusion matrix for fold " + (n+1) + "/" + folds + " ****\n"));
             System.out.println("Correct % = "+eval.pctCorrect());
-//            System.out.println("Incorrect % = "+eval.pctIncorrect());
-//            System.out.println("AUC = "+eval.areaUnderROC(1));
-//            System.out.println("kappa = "+eval.kappa());
-//            System.out.println("MAE = "+eval.meanAbsoluteError());
-//            System.out.println("RMSE = "+eval.rootMeanSquaredError());
-//            System.out.println("RAE = "+eval.relativeAbsoluteError());
-//            System.out.println("RRSE = "+eval.rootRelativeSquaredError());
             System.out.println("Precision = "+eval.precision(1));
             System.out.println("Recall = "+eval.recall(1));
             System.out.println("fMeasure = "+eval.fMeasure(1));
-//            System.out.println("Error Rate = "+eval.errorRate());
-            //the confusion matrix
-            //System.out.println(eval.toMatrixString("=== Overall Confusion Matrix ===\n"));
         }
     }
 }

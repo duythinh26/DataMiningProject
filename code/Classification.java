@@ -1,6 +1,11 @@
+import weka.attributeSelection.AttributeSelection;
+import weka.attributeSelection.CfsSubsetEval;
+import weka.attributeSelection.GreedyStepwise;
+import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.rules.ZeroR;
+import weka.classifiers.trees.J48;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -45,7 +50,40 @@ public class Classification {
         // print out evaluation result and confusion matrix
         printConfusionMatrix();
     }
+    
+    private static void j48Classifier() throws Exception{
+        // Load the dataset
+        source = new DataSource(path);
+        data = source.getDataSet();
+        data.setClassIndex(0); // Set the class attribute
 
+        // Perform feature selection using CFS and GreedyStepwise
+        AttributeSelection selector = new AttributeSelection();
+        CfsSubsetEval evaluator = new CfsSubsetEval();
+        GreedyStepwise search = new GreedyStepwise();
+        selector.setEvaluator(evaluator);
+        selector.setSearch(search);
+        selector.SelectAttributes(data);
+        Instances selectedData = selector.reduceDimensionality(data); // Get the new Instances object with selected
+                                                                      // attributes
+
+        // Use J48 as the classifier
+        Classifier j48Classifier = new J48();
+
+        // Train the J48 classifier on the selected features
+        j48Classifier.buildClassifier(selectedData);
+
+        // Evaluate the J48 classifier
+        eval = new Evaluation(selectedData);
+        eval.crossValidateModel(j48Classifier, selectedData, 10, new java.util.Random(1)); // 10-fold cross validation
+
+        // Print out J48 model
+        System.out.println("=== J48 Model ===\n");
+        System.out.println(j48Classifier);
+
+        // Print out evaluation result and confusion matrix
+        printConfusionMatrix();
+    }  
     private static void zeroRClassifier() throws Exception{
         // load dataset
         source = new DataSource(path);

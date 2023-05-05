@@ -52,7 +52,7 @@ public class Preprocessing {
         /*
          * Handle missing values
          */
-
+        // Load dataset
         src = new DataSource("./code/data/StringToNominal-HepatitisCdata.arff");
         dataset = src.getDataSet();
 
@@ -197,23 +197,22 @@ public class Preprocessing {
          * Correlation Analysis
          */
         CorrelationAttributeEval cEval = new CorrelationAttributeEval();
-        for (int i = dataset.numAttributes() - 1; i >= 0; i--) {
-            System.out.print("\t" + "A[" + i + "]" + " ");
-        }
-
-        System.out.println();
-        for (int i = dataset.numAttributes() - 1; i >= 0; i--) {
+        for (int i = 0; i <= dataset.numAttributes() - 1; i++) {
             dataset.setClassIndex(i);
             cEval.buildEvaluator(dataset);
             for (int j = 0; j <= i; j++) {
                 if (j == 0) {
                     System.out.print(
-                            "A[" + i + "]" + "\t" + String.format("%.2f", cEval.evaluateAttribute(j)) + "\t");
+                            "A[" + i + "]" + "\t" + String.format("%.2f", cEval.evaluateAttribute(j)) + "\t"
+                            );
                 } else {
                     System.out.print(String.format("%.2f", cEval.evaluateAttribute(j)) + "\t");
                 }
             }
             System.out.println("\t");
+        }
+        for (int i = 0; i <= dataset.numAttributes() - 1; i++) {
+            System.out.print("\t" + "A[" + i + "]" + " ");
         }
     }
 }
